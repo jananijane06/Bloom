@@ -1,0 +1,7 @@
+{
+  "/spaces/[id]/page": "app/spaces/[id]/page.js",
+  "/settings/page": "app/settings/page.js",
+  "/timetable/page": "app/timetable/page.js",
+  "/today/page": "app/today/page.js",
+  "/spaces/page": "app/spaces/page.js"
+}
