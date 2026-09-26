@@ -62,9 +62,9 @@ export function Topbar({ onToggleSidebar, onQuickAddTask }: TopbarProps) {
   return (
     <>
       <header className="fixed left-0 lg:left-[250px] right-0 top-0 z-40 h-16 border-b border-white/60 bg-white/40 shadow-[0_2px_15px_rgba(0,0,0,0.02)] backdrop-blur-2xl">
-        <div className="flex h-16 w-full items-center justify-between px-4 sm:px-8">
+        <div className="flex h-16 w-full min-w-0 items-center justify-between gap-2 px-3 sm:px-8">
           {/* LEFT: MOBILE TOGGLE & DATE */}
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
             {onToggleSidebar && (
               <button
                 type="button"
@@ -76,21 +76,21 @@ export function Topbar({ onToggleSidebar, onQuickAddTask }: TopbarProps) {
               </button>
             )}
 
-            <div className="flex items-center gap-3">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-full border border-white bg-white/60 text-primary shadow-sm">
                 <span className="material-symbols-outlined text-[18px]">
                   calendar_today
                 </span>
               </div>
 
-              <span className="typewriter text-[12px] sm:text-[13px] text-on-surface truncate">
+              <span className="typewriter min-w-0 truncate text-[11px] text-on-surface sm:text-[13px]">
                 {currentDate}
               </span>
             </div>
           </div>
 
           {/* RIGHT */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
             {/* SEARCH */}
             <div className="relative hidden md:flex items-center">
               <span className="material-symbols-outlined absolute left-3.5 text-[18px] text-outline">

@@ -1,17 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import AppShell from '@/components/layout/AppShell';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { Button } from '@/components/ui/Button';
 import { ProgressRing } from '@/components/ui/ProgressRing';
-import { INITIAL_MOOD_LOGS } from '@/lib/constants';
 import { MoodLog, MoodType } from '@/types/journal';
+import { useAuth } from '@/components/auth/AuthProvider';
+import { createMoodLog, fetchMoodLogs } from '@/lib/moodLogs';
 import { Wind, Smile } from 'lucide-react';
-import { generateId, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 export default function MoodPage() {
-  const [logs, setLogs] = useState<MoodLog[]>(INITIAL_MOOD_LOGS);
+  const { user } = useAuth();
+  const [logs, setLogs] = useState<MoodLog[]>([]);
+  const [saveError, setSaveError] = useState('');
+  const [saving, setSaving] = useState(false);
   const [selectedMood, setSelectedMood] = useState<MoodType>('serene');
   const [energyLevel, setEnergyLevel] = useState<number>(4);
   const [selectedTags, setSelectedTags] = useState<string[]>(['Calm']);
@@ -45,20 +49,21 @@ export default function MoodPage() {
     );
   };
 
-  const handleLogMood = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newLog: MoodLog = {
-      id: `mood-${generateId()}`,
-      date: new Date().toISOString().split('T')[0],
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      mood: selectedMood,
-      energyLevel,
-      tags: selectedTags,
-      note: note.trim() || undefined,
-    };
+  const loadLogs = useCallback(async () => {
+    if (!user?.id) { setLogs([]); return; }
+    try { setLogs(await fetchMoodLogs(user.id)); setSaveError(''); }
+    catch (error) { setSaveError(error instanceof Error ? error.message : 'Could not load your mood history.'); }
+  }, [user?.id]);
+  useEffect(() => { void loadLogs(); }, [loadLogs]);
 
-    setLogs((prev) => [newLog, ...prev]);
-    setNote('');
+  const handleLogMood = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true); setSaveError('');
+    try {
+      const newLog = await createMoodLog(user?.id, { mood: selectedMood, energyLevel, tags: selectedTags, note: note.trim() || undefined });
+      setLogs((prev) => [newLog, ...prev]); setNote('');
+    } catch (error) { setSaveError(error instanceof Error ? error.message : 'Could not save your check-in.'); }
+    finally { setSaving(false); }
   };
 
   const toggleBreathExercise = () => {
@@ -102,6 +107,7 @@ export default function MoodPage() {
                   Check In With Yourself
                 </h2>
 
+                {saveError && <p role="alert" className="mb-3 rounded-xl bg-primary/10 px-3 py-2 text-xs text-primary">{saveError}</p>}
                 <form onSubmit={handleLogMood} className="space-y-5">
                   {/* Emotion Selector */}
                   <div>
@@ -189,7 +195,7 @@ export default function MoodPage() {
                   </div>
 
                   <div className="flex justify-end">
-                    <Button type="submit" variant="primary" size="sm">
+                    <Button type="submit" variant="primary" size="sm" isLoading={saving}>
                       Record Pulse
                     </Button>
                   </div>

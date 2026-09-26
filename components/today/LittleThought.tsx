@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function LittleThought() {
   const [thought, setThought] = useState("");
@@ -13,7 +14,7 @@ export default function LittleThought() {
       {/* TOP & CONTENT */}
       <div className="relative z-10 flex flex-col flex-1">
         {/* HEADER */}
-        <div className="flex items-center justify-between">
+        <div className="flex min-w-0 items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-white/70 shadow-sm">
               <span className="material-symbols-outlined text-[17px] text-primary">
@@ -26,7 +27,7 @@ export default function LittleThought() {
                 Little Thought
               </h2>
               <p className="text-[11px] sm:text-[12px] text-outline">
-                A tiny space for today
+                A daily reflection
               </p>
             </div>
           </div>
@@ -45,7 +46,7 @@ export default function LittleThought() {
           <textarea
             value={thought}
             onChange={(e) => setThought(e.target.value)}
-            placeholder="The little things count... crisp morning air, hot tea, finished assignments."
+            placeholder="Write a thought from today."
             className="mt-3 w-full flex-1 min-h-[140px] sm:min-h-[160px] resize-none bg-transparent text-[12px] sm:text-[13px] leading-relaxed text-on-surface outline-none placeholder:text-outline/70"
           />
 
@@ -57,20 +58,13 @@ export default function LittleThought() {
       </div>
 
       {/* BOTTOM */}
-      <div className="relative z-10 mt-4 flex items-center justify-between border-t border-white/60 pt-3">
-        <div className="flex items-center gap-1.5 text-[11px] text-outline">
-          <span className="material-symbols-outlined text-[15px]">
-            lock
-          </span>
-          Private to you
+      <div className="relative z-10 mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/60 pt-3">
+        <div className="flex min-w-0 items-center gap-2 text-[11px] text-outline">
+          <span className="material-symbols-outlined text-[15px]">lock</span>
+          <span>Journal entries are in Journal</span>
         </div>
 
-        <button
-          type="button"
-          className="berry-button rounded-full px-5 py-2 sm:py-2.5 text-[11px] sm:text-[12px] font-semibold text-white shadow-sm transition active:scale-95 hover:shadow-md"
-        >
-          Save thought
-        </button>
+        <Link href="/journal" className="berry-button rounded-full px-5 py-2 sm:py-2.5 text-[11px] sm:text-[12px] font-semibold text-white shadow-sm transition active:scale-95 hover:shadow-md">Open Journal</Link>
       </div>
     </section>
   );
